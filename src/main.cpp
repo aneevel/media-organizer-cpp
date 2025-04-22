@@ -1,5 +1,7 @@
 #include "gtkmm/enums.h"
+#include "gtkmm/filedialog.h"
 #include <gtkmm.h>
+#include <iostream>
 
 class OrganizerWindow : public Gtk::Window {
 public:
@@ -28,7 +30,33 @@ public:
   }
 
 protected:
-  void on_button_clicked() { m_label.set_text("hello, gtkmm world!"); }
+  void on_button_clicked() {
+    auto fileDialog = Gtk::FileDialog::create();
+
+    fileDialog->set_title("Select an ingestion folder");
+
+    fileDialog->select_folder(
+        *this,
+        [fileDialog, this](const Glib::RefPtr<Gio::AsyncResult> &result) {
+          try {
+            // Get the selected folder
+            auto file = fileDialog->select_folder_finish(result);
+
+            // Update the UI with the path
+            m_label.set_text("Selected folder: " + file->get_path());
+
+            // Do something with the selected folder
+            std::cout << "Selected folder path: " << file->get_path()
+                      << std::endl;
+          } catch (const Glib::Error &err) {
+
+            if (err.code() != Gtk::DialogError::DISMISSED) {
+              m_label.set_text(err.what());
+              std::cerr << "Error: " << err.what() << std::endl;
+            }
+          }
+        });
+  }
 
   Gtk::Box m_box{Gtk::Orientation::VERTICAL};
   Gtk::Label m_label{"Welcome to GTKmm"};
