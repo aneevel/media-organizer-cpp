@@ -1,17 +1,27 @@
+#include "gtkmm/enums.h"
 #include <gtkmm.h>
 
-class MyWindow : public Gtk::Window {
+class OrganizerWindow : public Gtk::Window {
 public:
-  MyWindow() {
-    set_title("Basic GTKmm App");
-    set_default_size(400, 200);
+  OrganizerWindow() {
+    set_title("Media Organizer");
+    maximize();
 
-    m_button.set_label("Click Me!");
+    m_button.set_label("Choose Ingestion Folder");
+    m_button.set_margin_top(12);
+    m_button.set_margin_bottom(12);
+    m_button.set_margin_start(12);
+    m_button.set_margin_end(12);
+    m_button.set_valign(Gtk::Align::CENTER);
+    m_button.set_halign(Gtk::Align::CENTER);
+    m_button.set_hexpand(true);
+    m_button.set_vexpand(true);
     m_button.signal_clicked().connect(
-        sigc::mem_fun(*this, &MyWindow::on_button_clicked));
+        sigc::mem_fun(*this, &OrganizerWindow::on_button_clicked));
 
-    m_box.set_margin(10);
-    m_box.set_spacing(10);
+    m_box.set_margin_top(12);
+    m_box.set_hexpand(true);
+    m_box.set_vexpand(true);
     m_box.append(m_label);
     m_box.append(m_button);
     set_child(m_box);
@@ -28,5 +38,5 @@ protected:
 int main(int argc, char *argv[]) {
   auto app = Gtk::Application::create("org.example.myapp");
 
-  app->make_window_and_run<MyWindow>(argc, argv);
+  app->make_window_and_run<OrganizerWindow>(argc, argv);
 }
